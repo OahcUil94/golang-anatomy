@@ -5,6 +5,11 @@
 
 [https://golang.org/src/](https://golang.org/src/)
 
+## 目的
+
+- 写出更高效的代码
+- 更全面的审视代码
+
 ## 内存区域划分
 
 ```
