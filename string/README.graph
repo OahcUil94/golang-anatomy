@@ -1,0 +1,7 @@
+graph { flow: south; }
+
+[string]->{label:"builtin/builtin.go"}[type string string]
+
+[type string string]->{label:"reflect/value.go"}[type StringHeader struct]
+
+[type StringHeader struct]->{label:"runtime/string.go"}[type stringStruct struct]

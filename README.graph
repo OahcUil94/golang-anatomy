@@ -1,0 +1,5 @@
+(memory layout: [Stack],[Frame],[Data],[Text])
+[Scheduler + Signal Processing] -> [Stack]
+[Function Args + Local Vars] -> [Frame]
+[Heap + Global Vars] -> [Data]
+[Code] -> [Text]
