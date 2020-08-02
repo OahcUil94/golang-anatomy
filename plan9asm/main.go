@@ -1,3 +1,7 @@
 package main
 
-var ID = 1024
+var ID int
+
+func main() {
+	println(ID)
+}
