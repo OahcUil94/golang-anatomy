@@ -28,7 +28,7 @@ main.go文件
 ```go
 package main
 
-var str = "hello world"
+var ID = 1024
 ```
 
 编译命令如下: 
@@ -37,43 +37,92 @@ var str = "hello world"
 - 命令2: `go build -gcflags -S`
 - 命令3: `go tool compile -N -l main.go`生成`main.o`文件, 再执行`go tool objdump main.o`
 
-编译结果如下: 
+> `compile`的`-N`参数表示禁用优化, `-l`参数表示禁用内联
 
+编译结果如下:
+ 
 ```
 go.cuinfo.packagename. SDWARFINFO dupok size=0
 	0x0000 6d 61 69 6e                                      main
-go.string."hello world" SRODATA dupok size=11
-	0x0000 68 65 6c 6c 6f 20 77 6f 72 6c 64                 hello world
 ""..inittask SNOPTRDATA size=24
 	0x0000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
 	0x0010 00 00 00 00 00 00 00 00                          ........
-"".str SDATA size=16
-	0x0000 00 00 00 00 00 00 00 00 0b 00 00 00 00 00 00 00  ................
-	rel 0+8 t=1 go.string."hello world"+0
+"".ID SNOPTRDATA size=8
+	0x0000 00 04 00 00 00 00 00 00                          ........
 ```
 
 ### 将Go汇编代码转换为最终汇编代码
 
+准备如下代码: 
 
+main.go文件
 
-> 虽然go tool提供了asm这个工具, 但是该工具需要以Go汇编代码为输入, 输出的是编译之后的汇编代码.
-> Go汇编语言中一个指令在最终的目标代码中可能会被编译为其它等价的机器指令.
-> go tool asm -S main_amd64.s
- 
+```go
+package main
 
-AMD64的CPU是小端序的, 
+var ID int
+```
 
-%x, 9527
+main_amd64.s文件
 
-$表示常量
+```go
+GLOBL ·ID(SB),$8
 
-内存地址离的很近, 性能有可能会好
+DATA ·ID+0(SB)/1,$0x00
+DATA ·ID+1(SB)/1,$0x04
+DATA ·ID+2(SB)/1,$0x00
+DATA ·ID+3(SB)/1,$0x00
+DATA ·ID+4(SB)/1,$0x00
+DATA ·ID+5(SB)/1,$0x00
+DATA ·ID+6(SB)/1,$0x00
+DATA ·ID+7(SB)/1,$0x00
 
-## 常见标识符
+```
 
-- TEXT: 告诉汇编器该数据放在TEXT区
-- SB: 告诉汇编器这是基于静态地址的数据(static base)
-- FP: 栈帧指针(Frame Pointer)
+> 注意: 每一个`.s`文件的最后必须有一个空行, 否则就会报类似的错误`./main_amd64.s:xx: unexpected EOF`
+
+编译命令如下: 
+
+- `go tool asm -S main_amd64.s`
+
+编译结果如下: 
+
+```
+"".ID SDATA size=8
+	0x0000 00 04 00 00 00 00 00 00                          ........
+```
+
+### 简洁说明
+
+- Go汇编中`$`符号表示常量
+- `amd64`的CPU是小端序的, 所以1024表示的十六进制不是`04 00`, 而是`00 04`
+
+#### GLOBAL指令
+
+#### DATA指令
+
+#### SB标识
+
+Static Base Pointer静态基指针, 用来表示全局变量和函数(函数变量貌似也是带有SB标识的, 测试过但不确定)
+
+#### SDWARFINFO标识
+
+- S: static(猜测)
+- DWARF: 全称`Debugging With Attributed Record Formats`, 编译器编译源代码生成调试信息的规范, 在Linux中被普遍使用
+- INFO: 信息
+
+#### SNOPTRDATA标识 
+
+- NOPTR: no pointer, 不包含指针
+- DATA: 数据
+
+#### dupok标识
+
+Duplicates Is OK, 标识是否允许符号冗余(同名符号), 暂时还未做进一步理解
+
+#### size标识
+
+表示占用的字节数大小
 
 ## 汇编指令
 
@@ -86,6 +135,7 @@ $表示常量
 
 ### Go语言中文网
 - [Go 语言汇编快速入门](https://studygolang.com/articles/12828)
+- [Go语言内幕(3):链接器,链接器,重定位](https://studygolang.com/articles/7208)
 
 ### 书籍
 - [Go语言高级编程](http://books.studygolang.com/advanced-go-programming-book/)

@@ -1,3 +1,3 @@
 package main
 
-var str = "hello world"
+var ID = 1024
