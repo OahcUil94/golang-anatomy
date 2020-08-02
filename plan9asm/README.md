@@ -1,5 +1,32 @@
 # Plan9汇编
 
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [Plan9汇编](#plan9汇编)
+  - [学习汇编目的](#学习汇编目的)
+  - [Go汇编说明](#go汇编说明)
+  - [编译命令](#编译命令)
+    - [将Go代码编译为最终汇编代码](#将go代码编译为最终汇编代码)
+    - [将Go汇编代码转换为最终汇编代码](#将go汇编代码转换为最终汇编代码)
+    - [指令标识说明](#指令标识说明)
+      - [GLOBAL指令](#global指令)
+      - [DATA指令](#data指令)
+      - [SB标识](#sb标识)
+      - [SDWARFINFO标识](#sdwarfinfo标识)
+      - [SNOPTRDATA标识](#snoptrdata标识)
+      - [dupok标识](#dupok标识)
+      - [size标识](#size标识)
+  - [汇编指令](#汇编指令)
+  - [参考资料](#参考资料)
+    - [官方文档](#官方文档)
+    - [Go语言中文网](#go语言中文网)
+    - [书籍](#书籍)
+    - [其他文章](#其他文章)
+
+<!-- /code_chunk_output -->
+
 ## 学习汇编目的
 
 - 分析代码底层实现
@@ -92,14 +119,26 @@ DATA ·ID+7(SB)/1,$0x00
 	0x0000 00 04 00 00 00 00 00 00                          ........
 ```
 
-### 简洁说明
+### 指令标识说明
 
+- `·`是一个特殊的unicode符号
 - Go汇编中`$`符号表示常量
 - `amd64`的CPU是小端序的, 所以1024表示的十六进制不是`04 00`, 而是`00 04`
 
 #### GLOBAL指令
 
+GLOBAL指令用于将标识符导出, GLOBAL指令语法`GLOBL symbol(SB), width`:
+
+- symbol: 变量标识符, 如果变量需要导出, 需要和Go代码中的变量名保持一致
+- width: 占用内存大小, 单位字节
+
 #### DATA指令
+
+用于把数据定义在内存的DATA段, 初始化变量, Data指令语法`DATA symbol+offset(SB)/width, value`:
+
+- offset: 地址偏移量, 单位字节
+- width: 初始化内存的宽度大小
+- value: 要初始化的值, 常量以`$`符号开头
 
 #### SB标识
 
