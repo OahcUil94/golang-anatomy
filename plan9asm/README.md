@@ -67,7 +67,7 @@ var ID = 1024
 > `compile`的`-N`参数表示禁用优化, `-l`参数表示禁用内联
 
 编译结果如下:
- 
+
 ```
 go.cuinfo.packagename. SDWARFINFO dupok size=0
 	0x0000 6d 61 69 6e                                      main
@@ -127,7 +127,7 @@ DATA ·ID+7(SB)/1,$0x00
 
 #### GLOBL指令
 
-GLOBL指令用于将标识符导出, GLOBL指令语法`GLOBL symbol(SB), width`:
+GLOBL指令用于将变量声明为global, 使用DATA结合GLOBL来定义一个变量, GLOBL指令语法`GLOBL symbol(SB), width`:
 
 - symbol: 变量标识符, 如果变量需要导出, 需要和Go代码中的变量名保持一致
 - width: 占用内存大小, 单位字节, 可以设置的值为1, 2, 4, 8
