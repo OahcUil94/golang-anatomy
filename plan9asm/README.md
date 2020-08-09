@@ -61,7 +61,7 @@ var ID = 1024
 编译命令如下: 
 
 - 命令1: `go tool compile -N -l -S main.go`
-- 命令2: `go build -gcflags -S`
+- 命令2: `go build -gcflags -S main.go`
 - 命令3: `go tool compile -N -l main.go`生成`main.o`文件, 再执行`go tool objdump main.o`
 
 > `compile`的`-N`参数表示禁用优化, `-l`参数表示禁用内联
